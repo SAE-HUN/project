@@ -14,3 +14,14 @@ class User(db.Model):
         self.username = username
         self.password = password
         self.shop = Shop()
+    
+    def create(username, password):
+        user = User(username=username, password=password)
+        db.session.add(user)
+        db.session.commit()
+        
+        return user
+    
+    def find(username, password):
+        user = User.query.filter_by(username=username, password=password).first()
+        return user
