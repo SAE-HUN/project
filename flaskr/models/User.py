@@ -1,6 +1,6 @@
 from . import db
-from .Shop import Shop
-from .Item import Item
+from .shop import Shop
+from .item import Item
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
