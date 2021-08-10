@@ -248,4 +248,5 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+configurations/
 # End of https://www.toptal.com/developers/gitignore/api/windows,flask,python,venv
