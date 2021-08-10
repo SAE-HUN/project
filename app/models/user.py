@@ -1,4 +1,6 @@
-from . import db
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from . import db, commit
 from .shop import Shop
 from .item import Item
 
@@ -12,16 +14,34 @@ class User(db.Model):
     
     def __init__(self, username, password):
         self.username = username
-        self.password = password
+        self.password = generate_password_hash(password)
         self.shop = Shop()
     
     def create(username, password):
         user = User(username=username, password=password)
-        db.session.add(user)
-        db.session.commit()
+        commit(user)
         
         return user
     
-    def find(username, password):
-        user = User.query.filter_by(username=username, password=password).first()
+    def verify_password(self, password):
+        return check_password_hash(self.password, password)
+    
+    def get(username):
+        user = User.query.filter_by(username=username).first()
         return user
+    
+    def buy(self, item_id):
+        item = Item.query.get(item_id)
+        seller = item.user
+
+        if not seller.shop.is_open:
+            return {'result': 'fail', 'reason': 'not open shop'}
+        
+        if self.money < item.price:
+            return {'result': 'fail', 'reason': 'not enough money'}
+
+        seller.money += item.price
+        self.money -= item.price
+        item.user = self
+        commit([self, seller, item])
+        return {'result': 'success'}
