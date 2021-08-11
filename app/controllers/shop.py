@@ -45,18 +45,6 @@ class Shop(Namespace):
         emit('exit', {'result': 'success'})
     
     @jwt_required()
-    def on_buy(self, data):
-        buyer_username = get_jwt_identity()
-        item = data['item']
-        buyer = User.get(username=buyer_username)
-        result = buyer.buy(item)
-
-        if result['result'] == 'success':
-            emit('buy', {'result': 'success', 'item': item}, to=result['seller'])
-        else:
-            emit('buy', {'result': 'fail', 'reason': result['reason']})
-    
-    @jwt_required()
     def on_sell(self, data):
         username = get_jwt_identity()
         user = User.get(username)
