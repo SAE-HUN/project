@@ -37,7 +37,7 @@ class User(db.Model):
         if self.money < item.price:
             return {'result': 'fail', 'reason': 'not enough money'}
 
-        if not self.want_sell:
+        if not item.want_sell:
             return {'result': 'fail', 'reason': 'user want sell this'}
 
         seller.money += item.price
