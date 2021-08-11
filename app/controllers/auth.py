@@ -1,6 +1,7 @@
 from flask.views import View
 from flask import request, jsonify
 from flask_jwt_extended import create_access_token
+from werkzeug.security import check_password_hash
 
 from models.user import User
 
@@ -30,7 +31,7 @@ class Login(View):
 
         user = User.get(username=username)
         
-        if user is not None and user.verify_password(password):
+        if user is not None and check_password_hash(user.password, password):
             return jsonify(
                 result="success",
                 access_token = create_access_token(
