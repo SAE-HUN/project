@@ -12,5 +12,11 @@ class Item(db.Model):
         commit(item)
         return item
     
+    def update(self, data):
+        for column, value in data.items():
+            setattr(self, column, value)
+        
+        commit(self)
+
     def get_items(user_id, want_sell):
         return Item.query.filter_by(user_id=user_id, want_sell=want_sell).all()
