@@ -3,7 +3,6 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from models.user import User
 from models.shop import Shop as md_Shop
-from models.item import Item
 from models import db, serialize
 
 class Shop(Namespace):
@@ -36,9 +35,7 @@ class Shop(Namespace):
         username = get_jwt_identity()
         room = data.get('room')
         join_room(room)
-        items = Item.query.filter_by(user_id=room).all()
-        items_to_json = [serialize(item) for item in items]
-        emit('enter', {'items': items_to_json})
+        emit('enter', {'result': 'success'})
     
     @jwt_required()
     def on_exit(self, data):
