@@ -41,4 +41,4 @@ class User(db.Model):
         self.money -= item.price
         item.user = self
         commit([self, seller, item])
-        return {'result': 'success'}
+        return {'result': 'success', 'seller': seller.id}
