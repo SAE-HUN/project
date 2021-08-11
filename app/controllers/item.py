@@ -26,3 +26,13 @@ class Item(Namespace):
             emit('buy', {'result': 'success', 'item': item}, namespace='/shops', to=result['seller'])
         else:
             emit('buy', {'result': 'fail', 'reason': result['reason']})
+    
+    @jwt_required()
+    def on_sell(self, data):
+        username = get_jwt_identity()
+        user = User.get(username)
+        name = data['name']
+        price = data['price']
+
+        item = md_Item.create(name, price, user.id)
+        emit('sell', {'item': serialize(item)}, namespace='/shops', to=user.id)
