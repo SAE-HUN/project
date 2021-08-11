@@ -1,4 +1,4 @@
-from flask_socketio import Namespace, emit, join_room, leave_room
+from flask_socketio import Namespace, emit, join_room, leave_room, close_room
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from models.user import User
@@ -25,6 +25,7 @@ class Shop(Namespace):
         username = get_jwt_identity()
         user = User.get(username=username)
         user.shop.close()
+        close_room(room=user.id)
         emit('close', {'shop_id': user.shop.id}, broadcast=True)
     
     @jwt_required()
