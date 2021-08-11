@@ -17,6 +17,7 @@ class Item(db.Model):
             setattr(self, column, value)
         
         commit(self)
+        return self
 
     def get_items(user_id, want_sell):
         return Item.query.filter_by(user_id=user_id, want_sell=want_sell).all()
