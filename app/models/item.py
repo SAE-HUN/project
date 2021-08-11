@@ -10,3 +10,6 @@ class Item(db.Model):
         item = Item(name=name, price=price, user_id=user_id)
         commit(item)
         return item
+    
+    def get_items(user_id):
+        return Item.query.filter_by(user_id=user_id).all()
