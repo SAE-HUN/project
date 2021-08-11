@@ -12,5 +12,5 @@ class Item(db.Model):
         commit(item)
         return item
     
-    def get_items(user_id):
-        return Item.query.filter_by(user_id=user_id).all()
+    def get_items(user_id, want_sell):
+        return Item.query.filter_by(user_id=user_id, want_sell=want_sell).all()
