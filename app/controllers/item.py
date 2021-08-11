@@ -1,5 +1,5 @@
-from flask_socketio import Namespace
+from flask_socketio import Namespace, emit
 
 class Item(Namespace):
-    def on_hello(self):
-        print('hello, Item')
+    def on_connect(self):
+        emit('connect', {'result': 'success'})
