@@ -47,13 +47,12 @@ class Shop(Namespace):
     @jwt_required()
     def on_buy(self, data):
         buyer_username = get_jwt_identity()
-        room = data['room']
         item = data['item']
         buyer = User.get(username=buyer_username)
         result = buyer.buy(item)
 
         if result['result'] == 'success':
-            emit('buy', {'result': 'success', 'item': item}, to=room)
+            emit('buy', {'result': 'success', 'item': item}, to=result['seller'])
         else:
             emit('buy', {'result': 'fail', 'reason': result['reason']})
     
