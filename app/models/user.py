@@ -37,8 +37,19 @@ class User(db.Model):
         if self.money < item.price:
             return {'result': 'fail', 'reason': 'not enough money'}
 
+        if not item.want_sell:
+            return {'result': 'fail', 'reason': 'user want sell this'}
+
         seller.money += item.price
         self.money -= item.price
         item.user = self
+        item.want_sell = False
         commit([self, seller, item])
-        return {'result': 'success'}
+        return {'result': 'success', 'seller': seller.id}
+    
+    def modify(self, item_id, user_id, changes):
+            item = Item.query.filter_by(id=item_id, user_id=user_id).first()
+            if item is not None:
+                return {'result': 'success', 'item': item.update(changes)}
+            else:
+                return {'result': 'fail', 'reason': 'item is not found.'}
