@@ -10,6 +10,11 @@ class Shop(Namespace):
     def on_connect(self):
         emit('connect', {'result': 'success'})
     
+    def on_get_shops(self):
+        opend_shops = md_Shop.get_opend_shops()
+        shops_to_json = [serialize(shop, depth=2, avoid=['password', 'money']) for shop in opend_shops]
+        emit('get_shops', {'shops': shops_to_json})
+    
     @jwt_required()
     def on_open(self):
         username = get_jwt_identity()
