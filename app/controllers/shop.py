@@ -43,13 +43,3 @@ class Shop(Namespace):
         room = data.get('room')
         leave_room(room)
         emit('exit', {'result': 'success'})
-    
-    @jwt_required()
-    def on_sell(self, data):
-        username = get_jwt_identity()
-        user = User.get(username)
-        name = data['name']
-        price = data['price']
-
-        item = Item.create(name, price, user.id)
-        emit('sell', {'item': serialize(item)}, to=user.id)
