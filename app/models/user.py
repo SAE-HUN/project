@@ -1,4 +1,4 @@
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 
 from . import db, commit
 from .shop import Shop
@@ -22,9 +22,6 @@ class User(db.Model):
         commit(user)
         
         return user
-    
-    def verify_password(self, password):
-        return check_password_hash(self.password, password)
     
     def get(username):
         user = User.query.filter_by(username=username).first()
