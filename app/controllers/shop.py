@@ -8,9 +8,7 @@ from models import db, serialize
 
 class Shop(Namespace):
     def on_connect(self):
-        opend_shops = md_Shop.get_opend_shops()
-        shops_to_json = [serialize(shop, depth=2, avoid=['password', 'money']) for shop in opend_shops]
-        emit('connect', {'shops': shops_to_json})
+        emit('connect', {'result': 'success'})
     
     @jwt_required()
     def on_open(self):
