@@ -28,13 +28,13 @@ class Item(Namespace):
             emit('buy', {'result': 'fail', 'reason': result['reason']})
     
     @jwt_required()
-    def on_sell(self, data):
+    def on_modify(self, data):
         username = get_jwt_identity()
         user = User.get(username)
         item_id = data['item']
-        price = data['price']
+        changes = data['changes']
         
-        result = user.sell(item_id, price, user.id)
+        result = user.sell(item_id, user.id, changes)
         if result['result'] == 'success':
             emit('sell', {'result': 'success', 'item': serialize(result['item'])}, namespace='/shops', to=user.id)
         else:

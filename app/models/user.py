@@ -47,9 +47,9 @@ class User(db.Model):
         commit([self, seller, item])
         return {'result': 'success', 'seller': seller.id}
     
-    def sell(self, item_id, price, user_id):
+    def modify(self, item_id, user_id, changes):
             item = Item.query.filter_by(id=item_id, user_id=user_id).first()
             if item is not None:
-                return {'result': 'success', 'item': item.update({'want_sell': True, 'price': price})}
+                return {'result': 'success', 'item': item.update(changes)}
             else:
                 return {'result': 'fail', 'reason': 'item is not found.'}
