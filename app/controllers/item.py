@@ -11,7 +11,7 @@ class Item(Namespace):
     
     def on_get_items(self, data):
         room = data['room']
-        items = md_Item.get_items(room)
+        items = md_Item.get_items(room, True)
         items_to_json = [serialize(item) for item in items]
         emit('get_items', {'items': items_to_json})
     
