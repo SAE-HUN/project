@@ -24,3 +24,7 @@ class EXIST_USERNAME(HTTPException):
 class SERVER_ERROR(HTTPException):
     code = 500
     title = "SERVER_ERROR"
+
+class LOGIN_FAIL(HTTPException):
+    code = 400
+    title = "LOGIN_FAIL"
