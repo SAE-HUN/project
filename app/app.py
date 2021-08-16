@@ -1,26 +1,25 @@
 from flask import Flask
-from flask_socketio import SocketIO
+
 from flask_jwt_extended import JWTManager
 
+from blueprints import user
 from models import db
-from blueprints.auth import auth
-from controllers.shop import Shop as ns_shop
-from controllers.item import Item
+from models.user import User
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
 jwt = JWTManager(app)
+
+app.config["SECRET_KEY"] = "1234"
+app.config[
+    "SQLALCHEMY_DATABASE_URI"
+] = "sqlite:///C:/Users/fjdks/project/app/db.sqlite3"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_COMMIT_ON_TEARDOWN"] = True
+app.register_blueprint(user.bp)
+
 db.init_app(app)
-
-app.config.from_envvar('APP_CONFIG_FILE')
-
 with app.app_context():
-    from models import user, shop, item
     db.create_all()
 
-app.register_blueprint(auth)
-socketio.on_namespace(ns_shop('/shops'))
-socketio.on_namespace(Item('/items'))
-
-if __name__ == '__main__':
-    socketio.run(app)
+if __name__ == "__main__":
+    app.run(debug=True)
