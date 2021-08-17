@@ -26,8 +26,8 @@ class Market(Namespace):
             raise SERVER_ERROR()
 
         response = {
-            "result": False,
+            "result": True,
             "store": {"id": store.id, "name": name, "description": description},
             "user": {"nickname": nickname},
         }
-        emit("open", response, namespace="/market")
+        emit("open", response, broadcast=True)
