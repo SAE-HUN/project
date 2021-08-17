@@ -81,3 +81,31 @@ class Market(Namespace):
             },
         }
         emit("modify", response, broadcast=True)
+
+    @jwt_required()
+    def on_close(self, data):
+        nickname = get_jwt_identity()
+        user = User.query.filter_by(nickname=nickname).first()
+
+        try:
+            store_id = data["id"]
+        except KeyError:
+            raise NO_REQUIRED_PARAMS()
+
+        store = Store.query.get(store_id)
+        if store is None:
+            raise NO_EXIST_STORE()
+
+        if user != store.user:
+            raise NO_AUTHORIZATION()
+
+        try:
+            store.delete()
+        except:
+            raise SERVER_ERROR()
+
+        response = {
+            "result": True,
+            "store": {"id": store_id, "user": {"nickname": nickname}},
+        }
+        emit("close", response, broadcast=True)
