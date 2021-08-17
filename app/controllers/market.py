@@ -31,3 +31,18 @@ class Market(Namespace):
             "user": {"nickname": nickname},
         }
         emit("open", response, broadcast=True)
+
+    def on_list(self):
+        stores = Store.query.all()
+        response = {"result": True, "stores": []}
+        for i in range(len(stores)):
+            store = stores[i]
+            serialized_user = {"nickname": store.user.nickname}
+            serialized_store = {
+                "id": store.id,
+                "name": store.name,
+                "description": store.description,
+                "user": serialized_user,
+            }
+            response["stores"].append(serialized_store)
+        emit("list", response)
