@@ -1,8 +1,8 @@
 from flask import Blueprint
 
 from controllers.user import User, Login
-from errors.user import *
-from errors.handlers import handle_error
+from modules.errors import *
+from modules.handlers import handle_error
 
 bp = Blueprint("user", __name__, url_prefix="/users/")
 bp.add_url_rule("/", view_func=User.as_view("user"))

@@ -5,7 +5,7 @@ from flask_jwt_extended import create_access_token
 from werkzeug.security import check_password_hash
 
 from models.user import User as UserMD
-from errors.user import *
+from modules.errors import *
 
 
 class User(MethodView):
@@ -32,7 +32,9 @@ class User(MethodView):
         except:
             raise SERVER_ERROR()
 
-        response = jsonify(access_token=create_access_token(nickname))
+        response = jsonify(
+            access_token=create_access_token(identity=nickname, expires_delta=False)
+        )
         return response, 201
 
 
@@ -52,6 +54,13 @@ class Login(View):
 
         user = UserMD.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
-            return jsonify(access_token=create_access_token(username)), 200
+            return (
+                jsonify(
+                    access_token=create_access_token(
+                        identity=user.nickname, expires_delta=False
+                    )
+                ),
+                200,
+            )
         else:
             raise LOGIN_FAIL()
