@@ -13,3 +13,8 @@ class Store(db.Model):
         db.session.commit()
 
         return store
+    
+    def update(self, name, description):
+        self.name = name
+        self.description = description
+        db.session.commit()
