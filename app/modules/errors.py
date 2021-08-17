@@ -25,6 +25,16 @@ class SERVER_ERROR(HTTPException):
     code = 500
     title = "SERVER_ERROR"
 
+
 class LOGIN_FAIL(HTTPException):
     code = 400
     title = "LOGIN_FAIL"
+
+
+class NO_EXIST_STORE(HTTPException):
+    code = 404
+    title = "NO_EXIST_STORE"
+
+class NO_AUTHORIZATION(HTTPException):
+    code = 403
+    title = "NO_AUTHORIZATION"
