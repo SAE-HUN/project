@@ -35,6 +35,12 @@ class NO_EXIST_STORE(HTTPException):
     code = 404
     title = "NO_EXIST_STORE"
 
+
 class NO_AUTHORIZATION(HTTPException):
     code = 403
     title = "NO_AUTHORIZATION"
+
+
+class NO_EXIST_ITEM(HTTPException):
+    code = 404
+    title = "NO_EXIST_ITEM"

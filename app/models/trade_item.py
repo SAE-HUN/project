@@ -23,3 +23,10 @@ class TradeItem(db.Model):
         db.session.commit()
 
         return item
+    
+    def update(self, name, description, category, price):
+        self.name = name
+        self.description = description
+        self.categor = category
+        self.price = price
+        db.session.commit()

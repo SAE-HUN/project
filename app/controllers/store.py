@@ -88,3 +88,43 @@ class Store(Namespace):
             }
             response["items"].append(serialized_item)
         emit("list", response)
+
+    @jwt_required()
+    def on_modify(self, data):
+        nickname = get_jwt_identity()
+        user = User.query.filter_by(nickname=nickname).first()
+
+        try:
+            item_id = data["id"]
+            name = data["name"]
+            description = data.get("description", "")
+            category = data["category"]
+            price = data["price"]
+        except KeyError:
+            raise NO_REQUIRED_PARAMS()
+
+        item = TradeItem.query.get(item_id)
+        if item is None:
+            raise NO_EXIST_ITEM()
+
+        if user != item.owner:
+            raise NO_AUTHORIZATION()
+
+        try:
+            item.update(name, description, category, price)
+        except:
+            raise SERVER_ERROR()
+
+        response = {
+            "result": True,
+            "item": {
+                "id": item_id,
+                "name": name,
+                "description": description,
+                "category": category,
+                "price": price,
+                "user": {"nickname": nickname},
+                "store": {"id": item.store.id},
+            },
+        }
+        emit("modify", response, to=item.store.id)
