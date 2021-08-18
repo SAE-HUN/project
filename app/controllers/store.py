@@ -41,7 +41,7 @@ class Store(Namespace):
 
         try:
             item = TradeItem.create(
-                name, description, price, category, user.id, store.id
+                name, description, category, price, user.id, store.id
             )
         except:
             raise SERVER_ERROR()
@@ -64,3 +64,27 @@ class Store(Namespace):
             },
             to=store_id,
         )
+
+    def on_list(self, data):
+        store_id = data["store_id"]
+        store = StoreMD.query.get(store_id)
+        if store is None:
+            raise NO_EXIST_STORE()
+
+        items = TradeItem.query.filter_by(store_id=store.id).all()
+        response = {"result": True, "items": []}
+        for i in range(len(items)):
+            item = items[i]
+            serialized_user = {"nickname": item.owner.nickname}
+            serialized_store = {"id": item.store.id}
+            serialized_item = {
+                "id": item.id,
+                "name": item.name,
+                "description": item.description,
+                "price": item.price,
+                "category": item.category,
+                "user": serialized_user,
+                "store": serialized_store,
+            }
+            response["items"].append(serialized_item)
+        emit("list", response)
