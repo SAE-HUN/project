@@ -30,3 +30,7 @@ class TradeItem(db.Model):
         self.categor = category
         self.price = price
         db.session.commit()
+    
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()

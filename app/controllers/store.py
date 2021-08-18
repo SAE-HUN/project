@@ -128,3 +128,38 @@ class Store(Namespace):
             },
         }
         emit("modify", response, to=item.store.id)
+
+    @jwt_required()
+    def on_delete(self, data):
+        nickname = get_jwt_identity()
+        user = User.query.filter_by(nickname=nickname).first()
+
+        try:
+            item_id = data["id"]
+        except KeyError:
+            raise NO_REQUIRED_PARAMS()
+
+        item = TradeItem.query.get(item_id)
+        if item is None:
+            raise NO_EXIST_ITEM()
+
+        if item.store is None:
+            raise NO_EXIST_STORE()
+
+        if user != item.owner:
+            raise NO_AUTHORIZATION()
+
+        try:
+            item.delete()
+        except:
+            raise SERVER_ERROR()
+
+        response = {
+            "result": True,
+            "item": {
+                "id": item_id,
+                "user": {"nickname": item.owner.nickname},
+                "store": {"id": item.store.id},
+            },
+        }
+        emit("delete", response, to=item.store.id)
