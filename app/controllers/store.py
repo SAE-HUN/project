@@ -163,3 +163,42 @@ class Store(Namespace):
             },
         }
         emit("delete", response, to=item.store.id)
+
+    @jwt_required()
+    def on_trade(self, data):
+        nickname = get_jwt_identity()
+        buyer = User.query.filter_by(nickname=nickname).first()
+
+        try:
+            item_id = data["id"]
+        except KeyError:
+            raise NO_REQUIRED_PARAMS()
+
+        try:
+            item = TradeItem.query.get(item_id)
+        except:
+            raise NO_EXIST_ITEM()
+
+        seller = item.owner
+        store = item.store
+
+        if buyer.money < item.price:
+            raise NOT_ENOUGH_MONEY()
+
+        if store is None:
+            raise NO_EXIST_STORE()
+
+        try:
+            buyer.buy(item.price)
+            seller.sell(item.price)
+            item.delete()
+        except:
+            raise SERVER_ERROR()
+
+        response = {
+            "result": True,
+            "seller": {"nickname": seller.nickname},
+            "buyer": {"nickname": buyer.nickname},
+            "item": {"id": item_id},
+        }
+        emit("trade", response, to=store.id)
