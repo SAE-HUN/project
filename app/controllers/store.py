@@ -174,9 +174,8 @@ class Store(Namespace):
         except KeyError:
             raise NO_REQUIRED_PARAMS()
 
-        try:
-            item = TradeItem.query.get(item_id)
-        except:
+        item = TradeItem.query.get(item_id)
+        if item is None:
             raise NO_EXIST_ITEM()
 
         seller = item.owner
