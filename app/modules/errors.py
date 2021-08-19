@@ -44,3 +44,8 @@ class NO_AUTHORIZATION(HTTPException):
 class NO_EXIST_ITEM(HTTPException):
     code = 404
     title = "NO_EXIST_ITEM"
+
+
+class NOT_ENOUGH_MONEY(HTTPException):
+    code = 400
+    title = "NOT_ENOUGH_MONEY"
