@@ -33,6 +33,6 @@ class User(db.Model):
 
     def buy(self, price):
         self.money -= price
-    
+
     def sell(self, price):
         self.money += price
