@@ -30,3 +30,9 @@ class User(db.Model):
     def check_username(username):
         result = User.query.filter_by(username=username).first()
         return True if result is None else False
+
+    def buy(self, price):
+        self.money -= price
+    
+    def sell(self, price):
+        self.money += price
