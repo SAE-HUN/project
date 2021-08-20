@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.user import User
 from models.store import Store as StoreMD
 from models.trade_item import TradeItem
+from models.trade_history import TradeHistory
 from modules.errors import *
 
 
@@ -71,10 +72,12 @@ class Store(Namespace):
         if store is None:
             raise NO_EXIST_STORE()
 
-        items = TradeItem.query.filter_by(store_id=store.id).all()
+        items = store.trade_item
         response = {"result": True, "items": []}
         for i in range(len(items)):
             item = items[i]
+            if item.is_selled:
+                continue
             serialized_user = {"nickname": item.owner.nickname}
             serialized_store = {"id": item.store.id}
             serialized_item = {
@@ -104,7 +107,7 @@ class Store(Namespace):
             raise NO_REQUIRED_PARAMS()
 
         item = TradeItem.query.get(item_id)
-        if item is None:
+        if item is None or item.is_selled:
             raise NO_EXIST_ITEM()
 
         if user != item.owner:
@@ -140,7 +143,7 @@ class Store(Namespace):
             raise NO_REQUIRED_PARAMS()
 
         item = TradeItem.query.get(item_id)
-        if item is None:
+        if item is None or item.is_selled:
             raise NO_EXIST_ITEM()
 
         if item.store is None:
@@ -175,7 +178,7 @@ class Store(Namespace):
             raise NO_REQUIRED_PARAMS()
 
         item = TradeItem.query.get(item_id)
-        if item is None:
+        if item is None or item.is_selled:
             raise NO_EXIST_ITEM()
 
         seller = item.owner
@@ -188,6 +191,7 @@ class Store(Namespace):
             raise NO_EXIST_STORE()
 
         try:
+            TradeHistory.create(item.id, buyer.id, seller.id)
             buyer.buy(item.price)
             seller.sell(item.price)
             item.delete()
