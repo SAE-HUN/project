@@ -1,4 +1,4 @@
-from flask_socketio import Namespace, emit, join_room
+from flask_socketio import Namespace, emit, join_room, leave_room
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from models.user import User
@@ -205,3 +205,12 @@ class Store(Namespace):
             "item": {"id": item_id},
         }
         emit("trade", response, to=store.id)
+
+    def on_exit(self, data):
+        try:
+            store_id = data["id"]
+        except:
+            raise NO_REQUIRED_PARAMS()
+
+        leave_room(store_id)
+        emit("exit", {"result": True, "store": {"id": store_id}})
